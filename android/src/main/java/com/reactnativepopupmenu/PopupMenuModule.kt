@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.view.Gravity
 import android.view.View
+import androidx.annotation.ColorInt
 import com.facebook.react.bridge.*
 import com.facebook.react.uimanager.PixelUtil
 import com.github.zawadz88.materialpopupmenu.popupMenu
@@ -12,8 +13,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.github.zawadz88.materialpopupmenu.appearance
 
 
-class PopupMenuModule(reactContext: ReactApplicationContext) :
-  ReactContextBaseJavaModule(reactContext) {
+class PopupMenuModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
   override fun getName(): String {
     return "PopupMenu"
@@ -45,7 +45,7 @@ class PopupMenuModule(reactContext: ReactApplicationContext) :
     if (options.hasKey("maxWidth")) {
       appearance.maxWidth = PixelUtil.toPixelFromDIP(options.getDouble("maxWidth")).toInt()
     }
-    
+
     if (options.hasKey("allowFontScaling")) {
       appearance.allowFontScaling = options.bool("allowFontScaling")
     }
@@ -73,7 +73,8 @@ class PopupMenuModule(reactContext: ReactApplicationContext) :
       }
 
       if (item.hasKey("separatorColor") && reactApplicationContext != null) {
-        appearance.separatorColor = item.color(reactApplicationContext!!, "separatorColor", Color.parseColor("#1F000000"))
+        appearance.separatorColor =
+          item.color(reactApplicationContext!!, "separatorColor", Color.parseColor("#1F000000"))
       }
 
       if (item.hasKey("iconTint") && reactApplicationContext != null) {
@@ -87,7 +88,8 @@ class PopupMenuModule(reactContext: ReactApplicationContext) :
 
 
     if (options.hasKey("backgroundColor") && reactApplicationContext != null) {
-      appearance.backgroundColor = options.color(reactApplicationContext!!, "backgroundColor", Color.parseColor("#1F000000"))
+      appearance.backgroundColor =
+        options.color(reactApplicationContext!!, "backgroundColor", Color.parseColor("#1F000000"))
     }
   }
 
@@ -191,12 +193,13 @@ class PopupMenuModule(reactContext: ReactApplicationContext) :
           val r = frame.getDouble("x").toPixel() + frame.getDouble("width").toPixel()
           val b = frame.getDouble("y").toPixel() + frame.getDouble("height").toPixel()
           rect = Rect(
-            frame.getDouble("x").toPixel(),
-            y,
-            r,
-            b
+            frame.getDouble("x").toPixel(), y, r, b
           )
         }
+        @ColorInt
+        val overrideBackgroundColor: Int? = if (params.hasKey("backgroundColor")) params.color(
+          activity, "backgroundColor", Color.parseColor("#1F000000")
+        ) else null
         popupMenu.setOnDismissListener {
           appearance = originalAppearance.copy()
           if (!didDismissBySelectItem) actionCallback.invoke(null)
@@ -205,7 +208,8 @@ class PopupMenuModule(reactContext: ReactApplicationContext) :
           context = activity,
           anchor = anchor,
           location = rect,
-          centered = params.bool("centered")
+          centered = params.bool("centered"),
+          overrideBackgroundColor = overrideBackgroundColor,
         )
       }
       if (params.hasKey("frame")) {

@@ -31,7 +31,7 @@ internal constructor(
   internal val popupMinWidth: Int,
   internal val popupMaxWidth: Int,
   internal val dropDownVerticalOffset: Int?,
-  internal val dropDownHorizontalOffset: Int?
+  internal val dropDownHorizontalOffset: Int?,
 ) {
 
   private var popupWindow: MaterialRecyclerViewPopupWindow? = null
@@ -46,7 +46,13 @@ internal constructor(
    * @param anchor view used to anchor the popup
    */
   @UiThread
-  fun show(context: Context, anchor: View, location: Rect? = null, centered: Boolean) {
+  fun show(
+    context: Context,
+    anchor: View,
+    location: Rect? = null,
+    centered: Boolean,
+    @ColorInt overrideBackgroundColor: Int? = null,
+  ) {
     val style = resolvePopupStyle(context)
     val styledContext = ContextThemeWrapper(context, style)
     val popupWindow = MaterialRecyclerViewPopupWindow(
@@ -62,7 +68,7 @@ internal constructor(
     popupWindow.adapter = adapter
     popupWindow.anchorView = anchor
 
-    popupWindow.show(location, centered)
+    popupWindow.show(location, centered, overrideBackgroundColor = overrideBackgroundColor)
     this.popupWindow = popupWindow
     setOnDismissListener(this.dismissListener)
   }
@@ -99,7 +105,7 @@ internal constructor(
 
   internal data class PopupMenuSection(
     val title: CharSequence?,
-    val items: List<AbstractPopupMenuItem>
+    val items: List<AbstractPopupMenuItem>,
   )
 
   internal data class PopupMenuItem(
@@ -117,19 +123,19 @@ internal constructor(
     val hasNestedItems: Boolean,
     override val viewBoundCallback: ViewBoundCallback,
     override val callback: () -> Unit,
-    override val dismissOnSelect: Boolean
+    override val dismissOnSelect: Boolean,
   ) : AbstractPopupMenuItem(callback, dismissOnSelect, viewBoundCallback)
 
   internal data class PopupMenuCustomItem(
     @LayoutRes val layoutResId: Int,
     override val viewBoundCallback: ViewBoundCallback,
     override val callback: () -> Unit,
-    override val dismissOnSelect: Boolean
+    override val dismissOnSelect: Boolean,
   ) : AbstractPopupMenuItem(callback, dismissOnSelect, viewBoundCallback)
 
   internal abstract class AbstractPopupMenuItem(
     open val callback: () -> Unit,
     open val dismissOnSelect: Boolean,
-    open val viewBoundCallback: ViewBoundCallback
+    open val viewBoundCallback: ViewBoundCallback,
   )
 }

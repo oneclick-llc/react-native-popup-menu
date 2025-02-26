@@ -11,6 +11,7 @@ import android.view.*
 import android.view.View.MeasureSpec
 import android.widget.FrameLayout
 import android.widget.PopupWindow
+import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.createAppCompatPopupWindow
 import androidx.core.widget.PopupWindowCompat
@@ -184,9 +185,9 @@ internal class MaterialRecyclerViewPopupWindow(
      * Show the popupMenu list. If the list is already showing, this method
      * will recalculate the popupMenu's size and position.
      */
-    internal fun show(location: Rect?, centered: Boolean) {
+    internal fun show(location: Rect?, centered: Boolean, @ColorInt overrideBackgroundColor: Int? = null) {
         checkNotNull(anchorView) { "Anchor view must be set!" }
-        val height = buildDropDown()
+        val height = buildDropDown(overrideBackgroundColor = overrideBackgroundColor)
 
         PopupWindowCompat.setWindowLayoutType(
             popup,
@@ -273,7 +274,7 @@ internal class MaterialRecyclerViewPopupWindow(
 
      * @return the content's height
      */
-    private fun buildDropDown(): Int {
+    private fun buildDropDown(@ColorInt overrideBackgroundColor: Int? = null): Int {
         var otherHeights = 0
 
         val dropDownList = View.inflate(context, R.layout.mpm_popup_menu, null) as RecyclerView
@@ -290,7 +291,7 @@ internal class MaterialRecyclerViewPopupWindow(
             dropDownList.clipToOutline = true
             // Move the background from popup to RecyclerView for clipToOutline to take effect.
             dropDownList.background = background
-            dropDownList.setBackgroundColor(appearance.backgroundColor)
+            dropDownList.setBackgroundColor(overrideBackgroundColor ?: appearance.backgroundColor)
             // Remove background from popup itself to avoid overdraw.
             // This causes issues on Lollipop so we do it on M+ only (see issue #66 on GitHub).
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
