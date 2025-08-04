@@ -85,5 +85,5 @@ fun ReadableMap.double(key: String, default: Double): Double {
 
 fun ReadableMap.color(context: Context, key: String, default: Int): Int {
   if (!hasKey(key)) return default
-  return ColorPropConverter.getColor(getDouble(key), context)
+  return ColorPropConverter.getColor(getDouble(key), context) ?: default
 }
