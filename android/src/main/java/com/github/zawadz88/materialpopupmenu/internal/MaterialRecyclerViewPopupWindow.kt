@@ -300,9 +300,9 @@ internal class MaterialRecyclerViewPopupWindow(
         }
 
         popup.contentView = dropDownList
-        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+//        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         popup.contentView.clipToOutline = true
-        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+//        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         popup.contentView.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
                 outline.setRoundRect(0, 0, view.width, view.height, appearance.cornerRadius)
